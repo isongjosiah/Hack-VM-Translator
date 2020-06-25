@@ -33,29 +33,29 @@ func (p *Parser) fileopener(filename string) error {
 	return nil
 }
 
-// seperatecomponent seperates the command line into it's
+// Seperatecomponent seperates the command line into it's
 // lexical components.
-func seperatecomponent(command string) (string, string, int) {
+func (p *Parser) Seperatecomponent(command string) (string, string, int) {
 	command = strings.TrimSpace(command)
 	output := strings.Split(command, " ")
 	n, _ := strconv.Atoi(output[2])
 	return output[0], output[1], n
 }
 
-func (p *Parser) hasMoreCommand() bool {
+// HasMoreCommand returns true if there are more commands to be read from the file
+func (p *Parser) HasMoreCommand() bool {
 	return p.hasMoreCommands
 }
 
-//Advance Moves to the next command
+//Advance Moves to the next command in the file
 func (p *Parser) Advance() {
 	p.current = p.next
-	p.NextCommand()
+	p.nextCommand()
 	// find a way to output p.current to the codewriter
 
 }
 
-// NextCommand stores the next command in p.next
-func (p *Parser) NextCommand() {
+func (p *Parser) nextCommand() {
 	if p.scanner.Scan() {
 		p.hasMoreCommands = true
 		p.next = p.scanner.Text()
@@ -65,21 +65,12 @@ func (p *Parser) NextCommand() {
 	}
 }
 
-// Construct opens the file/stream and gets ready to
-// parse it
-func (p *Parser) Construct(filename string) (comtype string, arg1 string, arg2 int, err error) {
-	err = p.fileopener(filename)
+// New creates an instance of the Parser types
+func New(filename string) (*Parser, error) {
+	var parser *Parser
+	err := parser.fileopener(filename)
 	if err != nil {
-		return "", "", 0, err
+		return nil, err
 	}
-	for {
-		if p.hasMoreCommands {
-			seperatecomponent(p.current)
-			p.Advance()
-		} else {
-			break
-		}
-	}
-
-	return "", "", 0, nil
+	return parser, nil
 }
