@@ -40,3 +40,10 @@ func (c *CodeWriter) Writeasm(cmd string) {
 	}
 
 }
+
+// New creates an instance of the type Codewriter
+func New() *CodeWriter {
+	var writer *CodeWriter
+
+	return writer
+}
