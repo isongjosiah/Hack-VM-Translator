@@ -49,20 +49,49 @@ func (p *Parser) HasMoreCommand() bool {
 
 //Advance Moves to the next command in the file
 func (p *Parser) Advance() {
-	p.current = p.next
+	// initially, the p.current field is an empty string, so a call to the next
+	// command function puts the first command in current.
 	p.nextCommand()
-	// find a way to output p.current to the codewriter
-
+	p.current = p.next
 }
 
 func (p *Parser) nextCommand() {
 	if p.scanner.Scan() {
 		p.hasMoreCommands = true
-		p.next = p.scanner.Text()
+		next := p.scanner.Text()
+		p.next = strings.TrimSpace(next)
 	} else {
 		p.hasMoreCommands = false
 		p.next = ""
 	}
+}
+
+// Command returns the type of command. for example push, pop, call ...
+func (p *Parser) Command() string {
+	line := p.current
+	list := strings.Split(line, " ")
+	// check in the main function if it begins with // if so continue the for loop and move to the next line. TODO
+	return list[0]
+}
+
+// Arg1 returns the first argument of the vm command
+func (p *Parser) Arg1() string {
+	line := p.current
+	list := strings.Split(line, " ")
+	return list[1]
+}
+
+// Arg2 returs the second argument of the vm command
+func (p *Parser) Arg2() (int, error) {
+	var n int
+	var err error
+
+	line := p.current
+	list := strings.Split(line, " ")
+	if n, err = strconv.Atoi(list[2]); err != nil {
+		return 0, err
+	}
+	return n, nil
 }
 
 // New creates an instance of the Parser types

@@ -6,7 +6,7 @@ import (
 
 //Push returns the assembly code mnemonic for pushing a value onto the
 // stack
-func push(segment string, n int) string {
+func Push(segment string, n int) string {
 	cmd := fmt.Sprintf("@%v\nD=A\n\n@%s\nA=M\nM=D\n\n@%s\nM=M+1", n, segment, segment)
 	return cmd
 }
@@ -78,7 +78,4 @@ func Or() string {
 func Not() string {
 	cmd := fmt.Sprintf("@SP\nA=M\nA=A-1\nD=M\nM=!D")
 	return cmd
-}
-func main() {
-	fmt.Println(push("LCL", 17))
 }
