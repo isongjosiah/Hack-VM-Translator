@@ -1,100 +1,42 @@
 package codewriter
 
-var segments = map[string]string{
-	"local":    "@LCL",
-	"stack":    "@SP",
-	"argument": "@ARG",
-	"this":     "@THIS",
-	"that":     "@THAT",
-	"static":   "@16",
-	"pointer":  "@THIS",
-}
+import (
+	"fmt"
+	"log"
+	"os"
+)
 
 // CodeWriter translates the VM commands
 // into Hack assembly code
 type CodeWriter struct {
+	filename string
 }
 
-// Writepush ...
-func (c *CodeWriter) Writepush(filename string, segment string, integer int) string {
-	switch segments[segment] {
-	case "local":
+// Createfile a file with the .asm extension. This file is
+// where the codewriter writes the assembly code mnemonic.
+func (c *CodeWriter) Createfile(filename string) {
+	name := fmt.Sprintf("%s.asm", filename)
+	c.filename = name
 
+	var err error
+	var file *os.File
+	if file, err = os.Create(name); err != nil {
+		log.Fatal(err)
 	}
-	return "nil"
+	file.Close()
 }
 
-// Writepop ...
-func (c *CodeWriter) Writepop(filename string) {
+//Writeasm writes the assembly code mnemonic to the file
+// created by the Createfile method
+func (c *CodeWriter) Writeasm(cmd string) {
+	file, err := os.OpenFile(c.filename, os.O_APPEND|os.O_WRONLY, 0644)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer file.Close()
 
-}
-
-// Doarithmetic ...
-func (c *CodeWriter) Doarithmetic(filename string) {
-
-	// func (c *CodeWriter) Dogt() {
-
-	// }
-
-	// func (c *CodeWriter) Dolt() {
-
-	// }
-
-	// func (c *CodeWriter) Doeq() {
-
-	// }
-
-	// func (c *CodeWriter) Doadd() {
-
-	// }
-
-	// func (c *CodeWriter) Dosub() {
-
-	// }
-
-	// func (c *CodeWriter) Doneg() {
-
-	// }
-
-	// func (c *CodeWriter) Donot() {
-
-	// }
-
-	// func (c *CodeWriter) Doand() {
-
-	// }
-
-	// func (c *CodeWriter) Door() {
-
-	// }
-}
-
-// Writelabel ...
-func (c *CodeWriter) Writelabel(filename string) {
-
-}
-
-// Dogoto ...
-func (c *CodeWriter) Dogoto(filename string) {
-
-}
-
-// Doifgoto ...
-func (c *CodeWriter) Doifgoto(filename string) {
-
-}
-
-// Dofunction ...
-func (c *CodeWriter) Dofunction(filename string) {
-
-}
-
-// Docall ...
-func (c *CodeWriter) Docall(filename string) {
-
-}
-
-// Doreturn ...
-func (c *CodeWriter) Doreturn(filename string) {
+	if _, err := file.WriteString(cmd); err != nil {
+		log.Fatal(err)
+	}
 
 }
