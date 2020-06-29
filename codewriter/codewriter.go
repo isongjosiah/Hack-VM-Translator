@@ -14,16 +14,17 @@ type CodeWriter struct {
 
 // Createfile a file with the .asm extension. This file is
 // where the codewriter writes the assembly code mnemonic.
-func (c *CodeWriter) Createfile(filename string) {
+func (c *CodeWriter) createfile(filename string) error {
 	name := fmt.Sprintf("%s.asm", filename)
 	c.filename = name
 
 	var err error
 	var file *os.File
 	if file, err = os.Create(name); err != nil {
-		log.Fatal(err)
+		return err
 	}
 	file.Close()
+	return nil
 }
 
 //Writeasm writes the assembly code mnemonic to the file
@@ -42,8 +43,13 @@ func (c *CodeWriter) Writeasm(cmd string) {
 }
 
 // New creates an instance of the type Codewriter
-func New() *CodeWriter {
+func New(filename string) (*CodeWriter, error) {
 	var writer *CodeWriter
 
-	return writer
+	err := writer.createfile(filename)
+	if err != nil {
+		return nil, err
+	}
+
+	return writer, nil
 }

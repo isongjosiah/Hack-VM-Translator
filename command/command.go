@@ -7,18 +7,18 @@ import (
 //Push returns the assembly code mnemonic for pushing a value onto the
 // stack
 func Push(segment string, n int) string {
-	cmd := fmt.Sprintf("@%v\nD=A\n\n@%s\nA=M\nM=D\n\n@%s\nM=M+1", n, segment, segment)
+	cmd := fmt.Sprintf("@%s\nA=M+%v\nD=M\n@SP\nA=M\nM=D\n\n@SP\nM=M+1", segment, n)
 	return cmd
 }
 
 // Pop returns the assembly code mnemonic for popping the top value of
 // the stack to a specified segment
 func Pop(segment string, n int) string {
-	cmd := fmt.Sprintf("@SP\nA=M\nD=M\nM=M-1\n\n@%s\nA=M+%v\nM=D", segment, n)
+	cmd := fmt.Sprintf("@SP\nM=M-1\nA=M\nD=M\n\n@%s\nA=M+%v\nM=D\n", segment, n)
 	return cmd
 }
 
-// Add returns the assembly code fmnemonic or adding the
+// Add returns the assembly code mnemonic or adding the
 // top two values in the stack
 func Add() string {
 	cmd := fmt.Sprintf("@SP\nA=M\n\nA=A-2\nD=M\nA=A+1\nD=D+M")

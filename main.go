@@ -18,13 +18,16 @@ func main() {
 	// setup the parser
 	parser, err := parser.New(filename)
 	if err != nil {
-		fmt.Print(err)
+		fmt.Println(err)
 		return
 	}
 
 	// setup the codewriter
-	writer := codewriter.New()
-	writer.Createfile(filename)
+	writer, err := codewriter.New(filename)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
 
 	for {
 		if parser.HasMoreCommand() {
