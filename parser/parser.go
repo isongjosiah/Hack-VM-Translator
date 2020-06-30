@@ -82,16 +82,14 @@ func (p *Parser) Arg1() string {
 }
 
 // Arg2 returs the second argument of the vm command
-func (p *Parser) Arg2() (int, error) {
+func (p *Parser) Arg2() int {
 	var n int
-	var err error
 
 	line := p.current
 	list := strings.Split(line, " ")
-	if n, err = strconv.Atoi(list[2]); err != nil {
-		return 0, err
-	}
-	return n, nil
+	n, _ = strconv.Atoi(list[2])
+
+	return n
 }
 
 // New creates an instance of the Parser types

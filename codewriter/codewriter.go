@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"strings"
 )
 
 // CodeWriter translates the VM commands
@@ -15,7 +16,9 @@ type CodeWriter struct {
 // Createfile a file with the .asm extension. This file is
 // where the codewriter writes the assembly code mnemonic.
 func (c *CodeWriter) createfile(filename string) error {
-	name := fmt.Sprintf("%s.asm", filename)
+	out := strings.Split(filename, ".")
+	named := out[0]
+	name := fmt.Sprintf("%s.asm", named)
 	c.filename = name
 
 	var err error
