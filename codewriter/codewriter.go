@@ -45,6 +45,7 @@ func (c *CodeWriter) Writeasm(cmd string) {
 // New creates an instance of the type Codewriter
 func New(filename string) (*CodeWriter, error) {
 	var writer *CodeWriter
+	writer = &CodeWriter{}
 
 	err := writer.createfile(filename)
 	if err != nil {
