@@ -37,6 +37,12 @@ func main() {
 			cmdT := parser.Command()
 			cmdT = strings.Title(cmdT)
 			switch cmdT {
+			case "//": // if a comment pass
+				continue
+			case "\n":
+				continue // if a new line pass
+			case "":
+				continue // have no idea what this allows us skip, but it is necessary.
 			case "Push":
 				com = cmd.Push(parser.Arg1(), parser.Arg2())
 			case "Pop":
@@ -62,7 +68,7 @@ func main() {
 			case "Mult":
 				com = cmd.Mult()
 			default:
-				a := fmt.Sprintf("This command %s is not yet provided for, try a future version", cmdT)
+				a := fmt.Sprintf("This command %s is not yet provided for, try a future version of the translator", cmdT)
 				fmt.Println(a)
 
 			}

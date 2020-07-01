@@ -1,7 +1,0 @@
-push local 3
-push local 4
-add
-pop local 1
-push this 5
-push this 3
-sub
