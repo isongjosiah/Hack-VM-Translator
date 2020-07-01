@@ -59,6 +59,8 @@ func main() {
 				com = cmd.Not()
 			case "Sub":
 				com = cmd.Sub()
+			case "Mult":
+				com = cmd.Mult()
 			default:
 				a := fmt.Sprintf("This command %s is not yet provided for, try a future version", cmdT)
 				fmt.Println(a)

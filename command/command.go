@@ -79,3 +79,11 @@ func Not() string {
 	cmd := fmt.Sprintf("@SP\nA=M\nA=A-1\nD=M\nM=!D\n")
 	return cmd
 }
+
+// Mult returns the assembly code mnemonic for performing multiplication
+// on the two top values in the stack
+func Mult() string {
+	cmd := fmt.Sprintf("@SP\nM=M-1\nA=M\nD=M\n\n@one\nM=D\n\n@SP\nM=M-1\nA=M\nD=M\n\n@two\nM=D\n\n@sum\nM=0\n\n@one\nD=M\n@END\nD;JEQ\n\n@two\nD=M\n@END\nD;JEQ\n\n@two\nD=M\n@k\nM=D\n\n(LOOP)\n@one\nD=M\n@sum\nM=D+M\n@k\nM=M-1\nD=M\n@END\nD;JEQ\n@LOOP\n0;JMP\n\n(END)\n@sum\nD=M\n\n@SP\nA=M\nM=D\n\n@SP\nM=M+1")
+
+	return cmd
+}
