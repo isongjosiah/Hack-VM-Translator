@@ -20,6 +20,17 @@ type Parser struct {
 
 var parser Parser
 
+var segments = map[string]string{
+	"local":    "LCL",
+	"constant": "CONST",
+	"argument": "ARG",
+	"static":   "",
+	"this":     "THIS",
+	"that":     "THAT",
+	"pointer":  "",
+	"temp":     "",
+}
+
 // opens the file, reads it and stores it content in a slice
 func (p *Parser) fileopener(filename string) error {
 	var err error
@@ -78,7 +89,7 @@ func (p *Parser) Command() string {
 func (p *Parser) Arg1() string {
 	line := p.current
 	list := strings.Split(line, " ")
-	return list[1]
+	return segments[list[1]]
 }
 
 // Arg2 returs the second argument of the vm command

@@ -1,4 +1,4 @@
-@constant
+@CONST
 A=M+7
 D=M
 @SP
@@ -7,7 +7,7 @@ M=D
 
 @SP
 M=M+1
-@constant
+@CONST
 A=M+8
 D=M
 @SP
