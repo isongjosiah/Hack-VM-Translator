@@ -28,7 +28,7 @@ var segments = map[string]string{
 	"this":     "THIS",
 	"that":     "THAT",
 	"pointer":  "",
-	"temp":     "",
+	"temp":     "@5",
 }
 
 // opens the file, reads it and stores it content in a slice
