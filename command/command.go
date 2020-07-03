@@ -6,15 +6,42 @@ import (
 
 //Push returns the assembly code mnemonic for pushing a value onto the
 // stack
-func Push(segment string, n int) string {
-	cmd := fmt.Sprintf("@%s\nA=M+%v\nD=M\n@SP\nA=M\nM=D\n\n@SP\nM=M+1\n", segment, n)
+func Push(segment string, n int, filename string) string {
+	var cmd string
+	var seg string
+
+	switch segment {
+	case "static":
+		seg = fmt.Sprintf("%s.%v", filename, n)
+		cmd = fmt.Sprintf("@%s\nD=M\n@SP\nA=M\nM=D\n\n@SP\nM=M+1\n", seg)
+	case "constant":
+		seg = fmt.Sprintf("@%v", n)
+		cmd = fmt.Sprintf("@%s\nD=A\n@SP\nA=M\nM=D\n\n@SP\nM=M+1\n", seg)
+	default:
+		seg = segment
+		cmd = fmt.Sprintf("@%v\nD=A\n@%s\nA=M+D\nD=M\n@SP\nA=M\nM=D\n\n@SP\nM=M+1\n", n, seg)
+	}
+
 	return cmd
 }
 
 // Pop returns the assembly code mnemonic for popping the top value of
 // the stack to a specified segment
-func Pop(segment string, n int) string {
-	cmd := fmt.Sprintf("@SP\nM=M-1\nA=M\nD=M\n\n@%s\nA=M+%v\nM=D\n", segment, n)
+func Pop(segment string, n int, filename string) string {
+	var cmd string
+	var seg string
+
+	switch segment {
+	case "static":
+		seg = fmt.Sprintf("%s.%v", filename, n)
+		cmd = fmt.Sprintf("@SP\nM=M-1\nA=M\nD=M\n\n@%s\nM=D\n", seg)
+	case "constant":
+		seg = fmt.Sprintf("@%v", n)
+		cmd = fmt.Sprintf("@SP\nM=M-1\nA=M\nD=M\n\n@%s\nM=D\n", seg)
+	default:
+		seg = segment
+		cmd = fmt.Sprintf("@SP\nM=M-1\nA=M\nD=M\n\n@%s\nA=M+%v\nM=D\n", seg, n)
+	}
 	return cmd
 }
 

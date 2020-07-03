@@ -22,12 +22,12 @@ var parser Parser
 
 var segments = map[string]string{
 	"local":    "LCL",
-	"constant": "CONST",
+	"constant": "constant",
 	"argument": "ARG",
-	"static":   "",
+	"static":   "static",
 	"this":     "THIS",
 	"that":     "THAT",
-	"pointer":  "",
+	"pointer":  "@3",
 	"temp":     "@5",
 }
 
