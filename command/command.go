@@ -13,13 +13,13 @@ func Push(segment string, n int, filename string) string {
 	switch segment {
 	case "static":
 		seg = fmt.Sprintf("%s.%v", filename, n)
-		cmd = fmt.Sprintf("@%s\nD=M\n@SP\nA=M\nM=D\n\n@SP\nM=M+1\n", seg)
+		cmd = fmt.Sprintf("@%s\nD=M\n@SP\nA=M\nM=D\n\n@SP\nM=M+1\n\n", seg)
 	case "constant":
-		seg = fmt.Sprintf("@%v", n)
-		cmd = fmt.Sprintf("@%s\nD=A\n@SP\nA=M\nM=D\n\n@SP\nM=M+1\n", seg)
+		seg = fmt.Sprintf("%v", n)
+		cmd = fmt.Sprintf("@%s\nD=A\n@SP\nA=M\nM=D\n\n@SP\nM=M+1\n\n", seg)
 	default:
 		seg = segment
-		cmd = fmt.Sprintf("@%v\nD=A\n@%s\nA=M+D\nD=M\n@SP\nA=M\nM=D\n\n@SP\nM=M+1\n", n, seg)
+		cmd = fmt.Sprintf("@%v\nD=A\n@%s\nA=M+D\nD=M\n@SP\nA=M\nM=D\n\n@SP\nM=M+1\n\n", n, seg)
 	}
 
 	return cmd
@@ -34,13 +34,13 @@ func Pop(segment string, n int, filename string) string {
 	switch segment {
 	case "static":
 		seg = fmt.Sprintf("%s.%v", filename, n)
-		cmd = fmt.Sprintf("@SP\nM=M-1\nA=M\nD=M\n\n@%s\nM=D\n", seg)
+		cmd = fmt.Sprintf("@SP\nM=M-1\nA=M\nD=M\n\n@%s\nM=D\n\n", seg)
 	case "constant":
-		seg = fmt.Sprintf("@%v", n)
-		cmd = fmt.Sprintf("@SP\nM=M-1\nA=M\nD=M\n\n@%s\nM=D\n", seg)
+		seg = fmt.Sprintf("%v", n)
+		cmd = fmt.Sprintf("@SP\nM=M-1\nA=M\nD=M\n\n@%s\nM=D\n\n", seg)
 	default:
 		seg = segment
-		cmd = fmt.Sprintf("@SP\nM=M-1\nA=M\nD=M\n\n@%s\nA=M+%v\nM=D\n", seg, n)
+		cmd = fmt.Sprintf("@SP\nM=M-1\nA=M\nD=M\n\n@%s\nA=M+%v\nM=D\n\n", seg, n)
 	}
 	return cmd
 }
@@ -48,69 +48,69 @@ func Pop(segment string, n int, filename string) string {
 // Add returns the assembly code mnemonic or adding the
 // top two values in the stack
 func Add() string {
-	cmd := fmt.Sprintf("@SP\nA=M\n\nA=A-2\nD=M\nA=A+1\nD=D+M\n")
+	cmd := fmt.Sprintf("@SP\nA=M\n\nA=A-1\nA=A-1\nD=M\nA=A+1\nD=D+M\n\n")
 	return cmd
 }
 
 // Sub returns the assembly code mnemonic for subtracting the
 // top two values in the stack
 func Sub() string {
-	cmd := fmt.Sprintf("@SP\nA=M\nA=A-2\nD=M\nA=A+1\nD=D+M\n")
+	cmd := fmt.Sprintf("@SP\nA=M\nA=A-2\nD=M\nA=A+1\nD=D+M\n\n")
 	return cmd
 }
 
 // Neg returns the assembly code mnemonic for negating a value
 func Neg() string {
-	cmd := fmt.Sprintf("@SP\nA=M\nA=A-1\nM=-M\n")
+	cmd := fmt.Sprintf("@SP\nA=M\nA=A-1\nM=-M\n\n")
 	return cmd
 }
 
 //Eq returns the assembly code mnemonic for checking if the
 // top two value of the stack are equal.
 func Eq() string {
-	cmd := fmt.Sprintf("@SP\nA=M\nA=A-1\nA=A-1\nD=M\nA=A+1\n@TRUE\nD-M;JEQ\nA=A-1\nM=0\n\n(TRUE)\n@SP\nM=M-1\nM=M-1\nM=M-1\nA=M\nM=1\n")
+	cmd := fmt.Sprintf("@SP\nA=M\nA=A-1\nA=A-1\nD=M\nA=A+1\n@TRUE\nD-M;JEQ\nA=A-1\nM=0\n\n(TRUE)\n@SP\nM=M-1\nM=M-1\nM=M-1\nA=M\nM=1\n\n")
 	return cmd
 }
 
 // Gt returns the assembly code mnemonic for checking if the
 // previous value in the stack is greater than the recent value
 func Gt() string {
-	cmd := fmt.Sprintf("@SP\nA=M\nA=A-1\nA=A-1\nA=A-1\nD=M\nA=A+1\nD=D-M\n@TRUE\nD;JGT\n\n@SP\nM=M-1\nM=M-1\nM=M-1\nA=M\nM=0\n")
+	cmd := fmt.Sprintf("@SP\nA=M\nA=A-1\nA=A-1\nA=A-1\nD=M\nA=A+1\nD=D-M\n@TRUE\nD;JGT\n\n@SP\nM=M-1\nM=M-1\nM=M-1\nA=M\nM=0\n\n")
 	return cmd
 }
 
 // Lt returns the assembly code mnemonic for checking if the
 //previous value in the stack is less than the recent value
 func Lt() string {
-	cmd := fmt.Sprintf("@SP\nA=M\nA=A-1\nA=A-1\nA=A-1\nD=M\nA=A+1\nD=D-M\n@TRUE\nD;JLT\n\n@SP\nM=M-1\nM=M-1\nM=M-1\nA=M\nM=0\n\n(TRUE)\n@SP\nM=M-1\nM=M-1\nM=M-1\nA=M\nM=1\n")
+	cmd := fmt.Sprintf("@SP\nA=M\nA=A-1\nA=A-1\nA=A-1\nD=M\nA=A+1\nD=D-M\n@TRUE\nD;JLT\n\n@SP\nM=M-1\nM=M-1\nM=M-1\nA=M\nM=0\n\n(TRUE)\n@SP\nM=M-1\nM=M-1\nM=M-1\nA=M\nM=1\n\n")
 	return cmd
 }
 
 // And returns the assembly code mneomonic for performing logical
 // "and" on the top two values in the stack
 func And() string {
-	cmd := fmt.Sprintf("@SP\nA=M\nA=A-1\nA=A-1\nA=A-1\nD=M\nA=A+1\nD=D&M\n@TRUE\nD;JGT\n\n@SP\nM=M=1\nM=M=1\nM=M-1\nA=M\nM=0\n\n(TRUE)\n@SP\nM=M-1\nM=M-1\nM=M-1\nA=M\nM=1\n")
+	cmd := fmt.Sprintf("@SP\nA=M\nA=A-1\nA=A-1\nA=A-1\nD=M\nA=A+1\nD=D&M\n@TRUE\nD;JGT\n\n@SP\nM=M=1\nM=M=1\nM=M-1\nA=M\nM=0\n\n(TRUE)\n@SP\nM=M-1\nM=M-1\nM=M-1\nA=M\nM=1\n\n")
 	return cmd
 }
 
 // Or returns the assembly code mnemonic for performing logical
 // "or" on the top two values in the stack
 func Or() string {
-	cmd := fmt.Sprintf("@SP\nA=M\nA=A-1\nA=A-1\nA=A-1\nD=M\nA=A+1\nD=D|M\n@TRUE\nD;JGT\n\n@SP\nM=M=1\nM=M=1\nM=M-1\nA=M\nM=0\n\n(TRUE)\n@SP\nM=M-1\nM=M-1\nM=M-1\nA=M\nM=1\n")
+	cmd := fmt.Sprintf("@SP\nA=M\nA=A-1\nA=A-1\nA=A-1\nD=M\nA=A+1\nD=D|M\n@TRUE\nD;JGT\n\n@SP\nM=M=1\nM=M=1\nM=M-1\nA=M\nM=0\n\n(TRUE)\n@SP\nM=M-1\nM=M-1\nM=M-1\nA=M\nM=1\n\n")
 	return cmd
 }
 
 // Not returns the assembly code mnemonic for performing logical
 //"not" on the top two values in the stack
 func Not() string {
-	cmd := fmt.Sprintf("@SP\nA=M\nA=A-1\nD=M\nM=!D\n")
+	cmd := fmt.Sprintf("@SP\nA=M\nA=A-1\nD=M\nM=!D\n\n")
 	return cmd
 }
 
 // Mult returns the assembly code mnemonic for performing multiplication
 // on the two top values in the stack
 func Mult() string {
-	cmd := fmt.Sprintf("@SP\nM=M-1\nA=M\nD=M\n\n@one\nM=D\n\n@SP\nM=M-1\nA=M\nD=M\n\n@two\nM=D\n\n@sum\nM=0\n\n@one\nD=M\n@END\nD;JEQ\n\n@two\nD=M\n@END\nD;JEQ\n\n@two\nD=M\n@k\nM=D\n\n(LOOP)\n@one\nD=M\n@sum\nM=D+M\n@k\nM=M-1\nD=M\n@END\nD;JEQ\n@LOOP\n0;JMP\n\n(END)\n@sum\nD=M\n\n@SP\nA=M\nM=D\n\n@SP\nM=M+1")
+	cmd := fmt.Sprintf("@SP\nM=M-1\nA=M\nD=M\n\n@one\nM=D\n\n@SP\nM=M-1\nA=M\nD=M\n\n@two\nM=D\n\n@sum\nM=0\n\n@one\nD=M\n@END\nD;JEQ\n\n@two\nD=M\n@END\nD;JEQ\n\n@two\nD=M\n@k\nM=D\n\n(LOOP)\n@one\nD=M\n@sum\nM=D+M\n@k\nM=M-1\nD=M\n@END\nD;JEQ\n@LOOP\n0;JMP\n\n(END)\n@sum\nD=M\n\n@SP\nA=M\nM=D\n\n@SP\nM=M+1\n\n")
 
 	return cmd
 }

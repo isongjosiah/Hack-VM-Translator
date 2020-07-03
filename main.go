@@ -39,8 +39,6 @@ func main() {
 			switch cmdT {
 			case "//": // if a comment pass
 				continue
-			case "\n":
-				continue // if a new line pass
 			case "":
 				continue // have no idea what this allows us skip, but it is necessary.
 			case "Push":
