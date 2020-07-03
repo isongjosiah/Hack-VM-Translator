@@ -44,9 +44,9 @@ func main() {
 			case "":
 				continue // have no idea what this allows us skip, but it is necessary.
 			case "Push":
-				com = cmd.Push(parser.Arg1(), parser.Arg2())
+				com = cmd.Push(parser.Arg1(), parser.Arg2(), writer.Name())
 			case "Pop":
-				com = cmd.Pop(parser.Arg1(), parser.Arg2())
+				com = cmd.Pop(parser.Arg1(), parser.Arg2(), writer.Name())
 			case "Add":
 				com = cmd.Add()
 			case "Neg":

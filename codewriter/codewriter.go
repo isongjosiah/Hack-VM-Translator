@@ -11,6 +11,7 @@ import (
 // into Hack assembly code
 type CodeWriter struct {
 	filename string
+	name     string
 }
 
 // Createfile a file with the .asm extension. This file is
@@ -18,6 +19,7 @@ type CodeWriter struct {
 func (c *CodeWriter) createfile(filename string) error {
 	out := strings.Split(filename, ".")
 	named := out[0]
+	c.name = named
 	name := fmt.Sprintf("%s.asm", named)
 	c.filename = name
 
@@ -43,6 +45,11 @@ func (c *CodeWriter) Writeasm(cmd string) {
 		log.Fatal(err)
 	}
 
+}
+
+// Name returns the name of the file for storing to static segment
+func (c *CodeWriter) Name() string {
+	return c.name
 }
 
 // New creates an instance of the type Codewriter
