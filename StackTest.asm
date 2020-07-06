@@ -515,29 +515,15 @@ M=-M
 A=M
 A=A-1
 A=A-1
-A=A-1
 D=M
 A=A+1
 D=D&M
-@TRUE
-D;JGT
 
 @SP
-M=M=1
-M=M=1
-A=M
-M=0
-
-@SP
-M=M+1
-
-(TRUE)
-@SP
-M=M-1
 M=M-1
 M=M-1
 A=M
-M=-1
+M=D
 
 @SP
 M=M+1
@@ -552,34 +538,20 @@ M=D
 @SP
 M=M+1
 
-//or
+//and
 @SP
 A=M
-A=A-1
 A=A-1
 A=A-1
 D=M
 A=A+1
-D=D|M
-@TRUE
-D;JGT
+D=D&M
 
 @SP
-M=M=1
-M=M=1
-A=M
-M=0
-
-@SP
-M=M+1
-
-(TRUE)
-@SP
-M=M-1
 M=M-1
 M=M-1
 A=M
-M=-1
+M=D
 
 @SP
 M=M+1
