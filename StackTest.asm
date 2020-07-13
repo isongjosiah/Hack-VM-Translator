@@ -26,23 +26,28 @@ A=A-1
 D=M
 A=A+1
 D=D-M
-@TRUE
-D-M;JEQ
+@TRUE.1
+D;JEQ
 @SP
 M=M-1
 
 M=M-1
 A=M
 M=0
+@SP
+M=M+1
+@END.1
+0;JMP
 
-(TRUE)
+(TRUE.1)
 @SP
 M=M-1
 M=M-1
 A=M
 M=-1
- @SP
+@SP
 M=M+1
+(END.1)
 
 //push
 @17
@@ -72,23 +77,28 @@ A=A-1
 D=M
 A=A+1
 D=D-M
-@TRUE
-D-M;JEQ
+@TRUE.2
+D;JEQ
 @SP
 M=M-1
 
 M=M-1
 A=M
 M=0
+@SP
+M=M+1
+@END.2
+0;JMP
 
-(TRUE)
+(TRUE.2)
 @SP
 M=M-1
 M=M-1
 A=M
 M=-1
- @SP
+@SP
 M=M+1
+(END.2)
 
 //push
 @16
@@ -118,23 +128,28 @@ A=A-1
 D=M
 A=A+1
 D=D-M
-@TRUE
-D-M;JEQ
+@TRUE.3
+D;JEQ
 @SP
 M=M-1
 
 M=M-1
 A=M
 M=0
+@SP
+M=M+1
+@END.3
+0;JMP
 
-(TRUE)
+(TRUE.3)
 @SP
 M=M-1
 M=M-1
 A=M
 M=-1
- @SP
+@SP
 M=M+1
+(END.3)
 
 //push
 @892
@@ -164,7 +179,7 @@ A=A-1
 D=M
 A=A+1
 D=D-M
-@TRUE
+@TRUE.4
 D;JLT
 
 @SP
@@ -174,7 +189,10 @@ A=M
 M=0
 @SP
 M=M+1
-(TRUE)
+@END.4
+0;JMP
+
+(TRUE.4)
 @SP
 M=M-1
 M=M-1
@@ -183,6 +201,7 @@ M=-1
 
 @SP
 M=M+1
+(END.4)
 
 //push
 @891
@@ -212,7 +231,7 @@ A=A-1
 D=M
 A=A+1
 D=D-M
-@TRUE
+@TRUE.5
 D;JLT
 
 @SP
@@ -222,7 +241,10 @@ A=M
 M=0
 @SP
 M=M+1
-(TRUE)
+@END.5
+0;JMP
+
+(TRUE.5)
 @SP
 M=M-1
 M=M-1
@@ -231,6 +253,7 @@ M=-1
 
 @SP
 M=M+1
+(END.5)
 
 //push
 @891
@@ -260,7 +283,7 @@ A=A-1
 D=M
 A=A+1
 D=D-M
-@TRUE
+@TRUE.6
 D;JLT
 
 @SP
@@ -270,7 +293,10 @@ A=M
 M=0
 @SP
 M=M+1
-(TRUE)
+@END.6
+0;JMP
+
+(TRUE.6)
 @SP
 M=M-1
 M=M-1
@@ -279,6 +305,7 @@ M=-1
 
 @SP
 M=M+1
+(END.6)
 
 //push
 @32767
@@ -308,7 +335,7 @@ A=A-1
 D=M
 A=A+1
 D=D-M
-@TRUE
+@TRUE.7
 D;JGT
 
 @SP
@@ -318,7 +345,10 @@ A=M
 M=0
 @SP
 M=M+1
-(TRUE)
+@END.7
+0;JMP
+
+(TRUE.7)
 @SP
 M=M-1
 M=M-1
@@ -327,6 +357,7 @@ M=-1
 
 @SP
 M=M+1
+(END.7)
 
 //push
 @32766
@@ -356,7 +387,7 @@ A=A-1
 D=M
 A=A+1
 D=D-M
-@TRUE
+@TRUE.8
 D;JGT
 
 @SP
@@ -366,7 +397,10 @@ A=M
 M=0
 @SP
 M=M+1
-(TRUE)
+@END.8
+0;JMP
+
+(TRUE.8)
 @SP
 M=M-1
 M=M-1
@@ -375,6 +409,7 @@ M=-1
 
 @SP
 M=M+1
+(END.8)
 
 //push
 @32766
@@ -404,7 +439,7 @@ A=A-1
 D=M
 A=A+1
 D=D-M
-@TRUE
+@TRUE.9
 D;JGT
 
 @SP
@@ -414,7 +449,10 @@ A=M
 M=0
 @SP
 M=M+1
-(TRUE)
+@END.9
+0;JMP
+
+(TRUE.9)
 @SP
 M=M-1
 M=M-1
@@ -423,6 +461,7 @@ M=-1
 
 @SP
 M=M+1
+(END.9)
 
 //push
 @57
@@ -545,7 +584,7 @@ A=A-1
 A=A-1
 D=M
 A=A+1
-D=D&M
+D=D|M
 
 @SP
 M=M-1

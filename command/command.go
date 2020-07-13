@@ -4,6 +4,8 @@ import (
 	"fmt"
 )
 
+var counter = 0
+
 //Push returns the assembly code mnemonic for pushing a value onto the
 // stack
 func Push(segment string, n int, filename string) string {
@@ -68,21 +70,30 @@ func Neg() string {
 //Eq returns the assembly code mnemonic for checking if the
 // top two value of the stack are equal.
 func Eq() string {
-	cmd := fmt.Sprintf("//eq\n@SP\nA=M\nA=A-1\nA=A-1\nD=M\nA=A+1\nD=D-M\n@TRUE\nD-M;JEQ\n@SP\nM=M-1\n\nM=M-1\nA=M\nM=0\n\n(TRUE)\n@SP\nM=M-1\nM=M-1\nA=M\nM=-1\n @SP\nM=M+1\n\n")
+	counter++
+	loop := fmt.Sprintf("TRUE.%v", counter)
+	end := fmt.Sprintf("END.%v", counter)
+	cmd := fmt.Sprintf("//eq\n@SP\nA=M\nA=A-1\nA=A-1\nD=M\nA=A+1\nD=D-M\n@%s\nD;JEQ\n@SP\nM=M-1\n\nM=M-1\nA=M\nM=0\n@SP\nM=M+1\n@%s\n0;JMP\n\n(%s)\n@SP\nM=M-1\nM=M-1\nA=M\nM=-1\n@SP\nM=M+1\n(%s)\n\n", loop, end, loop, end)
 	return cmd
 }
 
 // Gt returns the assembly code mnemonic for checking if the
 // previous value in the stack is greater than the recent value
 func Gt() string {
-	cmd := fmt.Sprintf("//gt\n@SP\nA=M\nA=A-1\nA=A-1\nD=M\nA=A+1\nD=D-M\n@TRUE\nD;JGT\n\n@SP\nM=M-1\nM=M-1\nA=M\nM=0\n@SP\nM=M+1\n(TRUE)\n@SP\nM=M-1\nM=M-1\nA=M\nM=-1\n\n@SP\nM=M+1\n\n")
+	counter++
+	loop := fmt.Sprintf("TRUE.%v", counter)
+	end := fmt.Sprintf("END.%v", counter)
+	cmd := fmt.Sprintf("//gt\n@SP\nA=M\nA=A-1\nA=A-1\nD=M\nA=A+1\nD=D-M\n@%s\nD;JGT\n\n@SP\nM=M-1\nM=M-1\nA=M\nM=0\n@SP\nM=M+1\n@%s\n0;JMP\n\n(%s)\n@SP\nM=M-1\nM=M-1\nA=M\nM=-1\n\n@SP\nM=M+1\n(%s)\n\n", loop, end, loop, end)
 	return cmd
 }
 
 // Lt returns the assembly code mnemonic for checking if the
 //previous value in the stack is less than the recent value
 func Lt() string {
-	cmd := fmt.Sprintf("//lt\n@SP\nA=M\nA=A-1\nA=A-1\nD=M\nA=A+1\nD=D-M\n@TRUE\nD;JLT\n\n@SP\nM=M-1\nM=M-1\nA=M\nM=0\n@SP\nM=M+1\n(TRUE)\n@SP\nM=M-1\nM=M-1\nA=M\nM=-1\n\n@SP\nM=M+1\n\n")
+	counter++
+	loop := fmt.Sprintf("TRUE.%v", counter)
+	end := fmt.Sprintf("END.%v", counter)
+	cmd := fmt.Sprintf("//lt\n@SP\nA=M\nA=A-1\nA=A-1\nD=M\nA=A+1\nD=D-M\n@%s\nD;JLT\n\n@SP\nM=M-1\nM=M-1\nA=M\nM=0\n@SP\nM=M+1\n@%s\n0;JMP\n\n(%s)\n@SP\nM=M-1\nM=M-1\nA=M\nM=-1\n\n@SP\nM=M+1\n(%s)\n\n", loop, end, loop, end)
 	return cmd
 }
 
@@ -96,7 +107,7 @@ func And() string {
 // Or returns the assembly code mnemonic for performing logical
 // "or" on the top two values in the stack
 func Or() string {
-	cmd := fmt.Sprintf("//and\n@SP\nA=M\nA=A-1\nA=A-1\nD=M\nA=A+1\nD=D&M\n\n@SP\nM=M-1\nM=M-1\nA=M\nM=D\n\n@SP\nM=M+1\n\n")
+	cmd := fmt.Sprintf("//and\n@SP\nA=M\nA=A-1\nA=A-1\nD=M\nA=A+1\nD=D|M\n\n@SP\nM=M-1\nM=M-1\nA=M\nM=D\n\n@SP\nM=M+1\n\n")
 	return cmd
 }
 
