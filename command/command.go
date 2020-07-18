@@ -50,14 +50,14 @@ func Pop(segment string, n int, filename string) string {
 // Add returns the assembly code mnemonic or adding the
 // top two values in the stack
 func Add() string {
-	cmd := fmt.Sprintf("//addition\n@SP\nM=M-1\nM=M-1\nA=M\nD=M\n\n@SP\nM=M+1\nA=M\nM=D+M\nD=M\n@SP\nM=M-1\nA=M\nM=D\n\n@SP\nM=M+1\n\n")
+	cmd := fmt.Sprintf("//addition\n@SP\nM=M-1\nA=M\nD=M\n\n@SP\nM=M-1\nA=M\nM=M+D\nD=M\n@SP\nA=M\nM=D\n\n@SP\nM=M+1\n\n")
 	return cmd
 }
 
 // Sub returns the assembly code mnemonic for subtracting the
 // top two values in the stack
 func Sub() string {
-	cmd := fmt.Sprintf("//subtraction\n@SP\nM=M-1\nM=M-1\nA=M\nD=M\n\n@SP\nM=M+1\nA=M\nM=D-M\nD=M\n@SP\nM=M-1\nA=M\nM=D\n\n@SP\nM=M+1\n\n")
+	cmd := fmt.Sprintf("//subtraction\n@SP\nM=M-1\nA=M\nD=M\n\n@SP\nM=M-1\nA=M\nM=M-D\nD=M\n@SP\nA=M\nM=D\n\n@SP\nM=M+1\n\n")
 	return cmd
 }
 
