@@ -19,6 +19,16 @@ func Push(segment string, n int, filename string) string {
 	case "constant":
 		seg = fmt.Sprintf("%v", n)
 		cmd = fmt.Sprintf("//push\n@%s\nD=A\n@SP\nA=M\nM=D\n\n@SP\nM=M+1\n\n", seg)
+	case "pointer":
+		// on the stack, location i on the pointer is accessed by 3 + i
+		pos := 3 + n
+		seg = fmt.Sprintf("%v", pos)
+		cmd = fmt.Sprintf("//push pointer\n@%v\nD=M\n@SP\nA=M\nM=D\n\n@SP\nM=M+1\n\n", seg)
+	case "temp":
+		// on the stack, location i on the temp is accessed by 5  + i
+		pos := 5 + n
+		seg = fmt.Sprintf("%v", pos)
+		cmd = fmt.Sprintf("//push temp\n@%v\nD=M\n@SP\nA=M\nM=D\n\n@SP\nM=M+1\n\n", seg)
 	default:
 		seg = segment
 		cmd = fmt.Sprintf("//push\n@%v\nD=A\n@%s\nA=M+D\nD=M\n@SP\nA=M\nM=D\n\n@SP\nM=M+1\n\n", n, seg)
@@ -40,6 +50,14 @@ func Pop(segment string, n int, filename string) string {
 	case "constant":
 		seg = fmt.Sprintf("%v", n)
 		cmd = fmt.Sprintf("//pop\n@SP\nM=M-1\nA=M\nD=M\n\n@%s\nM=D\n\n", seg)
+	case "pointer":
+		pos := 3 + n
+		seg = fmt.Sprintf("%v", pos)
+		cmd = fmt.Sprintf("//pop pointer\n@SP\nM=M-1\nA=M\nD=M\n\n@%s\nM=D\n\n", seg)
+	case "temp":
+		pos := 5 + n
+		seg = fmt.Sprintf("%v", pos)
+		cmd = fmt.Sprintf("//pop temp\n@SP\nM=M-1\nA=M\nD=M\n\n@%s\nM=D\n\n", seg)
 	default:
 		seg = segment
 		cmd = fmt.Sprintf("//pop\n@SP\nM=M-1\nA=M\nD=M\n\n@%s\nA=M+%v\nM=D\n\n", seg, n)

@@ -44,15 +44,6 @@ func (p *Parser) fileopener(filename string) error {
 	return nil
 }
 
-// Seperatecomponent seperates the command line into it's
-// lexical components.
-func (p *Parser) Seperatecomponent(command string) (string, string, int) {
-	command = strings.TrimSpace(command)
-	output := strings.Split(command, " ")
-	n, _ := strconv.Atoi(output[2])
-	return output[0], output[1], n
-}
-
 // HasMoreCommand returns true if there are more commands to be read from the file
 func (p *Parser) HasMoreCommand() bool {
 	return p.hasMoreCommands
