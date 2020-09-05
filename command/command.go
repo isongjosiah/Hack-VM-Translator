@@ -15,26 +15,27 @@ func Push(segment string, n int, filename string) string {
 	switch segment {
 	case "static":
 		seg = fmt.Sprintf("%s.%v", filename, n)
-		cmd = fmt.Sprintf("//push\n@%s\nD=M\n@SP\nA=M\nM=D\n\n@SP\nM=M+1\n\n", seg)
+		cmd = fmt.Sprintf("//push static %v\n@%s\nD=M\n\n@SP\nA=M\nM=D\n\n@SP\nM=M+1\n\n", n, seg)
 	case "constant":
 		seg = fmt.Sprintf("%v", n)
-		cmd = fmt.Sprintf("//push\n@%s\nD=A\n@SP\nA=M\nM=D\n\n@SP\nM=M+1\n\n", seg)
+		cmd = fmt.Sprintf("//push constant %v\n@%v\nD=A\n\n@SP\nA=M\nM=D\n\n@SP\nM=M+1\n\n", n, seg)
 	case "pointer":
 		// on the stack, location i on the pointer is accessed by 3 + i
 		pos := 3 + n
 		seg = fmt.Sprintf("%v", pos)
-		cmd = fmt.Sprintf("//push pointer\n@%v\nD=M\n@SP\nA=M\nM=D\n\n@SP\nM=M+1\n\n", seg)
+		cmd = fmt.Sprintf("//push pointer %v\n@%v\nD=M\n\n@SP\nA=M\nM=D\n\n@SP\nM=M+1\n\n", n, seg)
 	case "temp":
 		// on the stack, location i on the temp is accessed by 5  + i
 		pos := 5 + n
 		seg = fmt.Sprintf("%v", pos)
-		cmd = fmt.Sprintf("//push temp\n@%v\nD=M\n@SP\nA=M\nM=D\n\n@SP\nM=M+1\n\n", seg)
+		cmd = fmt.Sprintf("//push temp %v\n@%v\nD=M\n\n@SP\nA=M\nM=D\n\n@SP\nM=M+1\n\n", n, seg)
 	default:
+		// this runs for local, args this and that segments
 		seg = segment
-		cmd = fmt.Sprintf("//push\n@%v\nD=A\n@%s\nA=M+D\nD=M\n@SP\nA=M\nM=D\n\n@SP\nM=M+1\n\n", n, seg)
+		cmd = fmt.Sprintf("//push %s %v\n@%v\nD=A\n\n@%s\nA=M+D\nD=M\n\n@SP\nA=M\nM=D\n\n@SP\nM=M+1\n\n", seg, n, n, seg)
 	}
-
 	return cmd
+
 }
 
 // Pop returns the assembly code mnemonic for popping the top value of
@@ -46,21 +47,21 @@ func Pop(segment string, n int, filename string) string {
 	switch segment {
 	case "static":
 		seg = fmt.Sprintf("%s.%v", filename, n)
-		cmd = fmt.Sprintf("//pop\n@SP\nM=M-1\nA=M\nD=M\n\n@%s\nM=D\n\n", seg)
+		cmd = fmt.Sprintf("//pop static %v \n@SP\nAM=M-1\nD=M\n\n@%s\nM=D\n\n", n, seg)
 	case "constant":
 		seg = fmt.Sprintf("%v", n)
-		cmd = fmt.Sprintf("//pop\n@SP\nM=M-1\nA=M\nD=M\n\n@%s\nM=D\n\n", seg)
+		cmd = fmt.Sprintf("//pop constant %v\n@%v\nD=A\n\n@%s\nD=D+M\n\n@R13\nM=D\n\n@SP\nAM=M-1\nD=M\nM=0\n\n@R13\nA=M\nM=D\n\n", n, n, seg)
 	case "pointer":
 		pos := 3 + n
 		seg = fmt.Sprintf("%v", pos)
-		cmd = fmt.Sprintf("//pop pointer\n@SP\nM=M-1\nA=M\nD=M\n\n@%s\nM=D\n\n", seg)
+		cmd = fmt.Sprintf("//pop pointer %v\n@SP\nAM=M-1\nD=M\n\n@%v\nM=D\n\n", n, seg)
 	case "temp":
 		pos := 5 + n
 		seg = fmt.Sprintf("%v", pos)
-		cmd = fmt.Sprintf("//pop temp\n@SP\nM=M-1\nA=M\nD=M\n\n@%s\nM=D\n\n", seg)
+		cmd = fmt.Sprintf("//pop temp %v\n@SP\nAM=M-1\nD=M\n\n@%v\nM=D\n\n", n, seg)
 	default:
 		seg = segment
-		cmd = fmt.Sprintf("//pop\n@SP\nM=M-1\nA=M\nD=M\n\n@%s\nA=M+%v\nM=D\n\n", seg, n)
+		cmd = fmt.Sprintf("//pop %s %v\n@%v\nD=A\n\n@%s\nD=D+M\n\n@R13\nM=D\n\n@SP\nAM=M-1\nD=M\nM=0\n\n@R13\nA=M\nM=D\n\n", seg, n, n, seg)
 	}
 	return cmd
 }

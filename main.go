@@ -35,7 +35,7 @@ func main() {
 		parser.Advance()
 		if parser.HasMoreCommand() {
 			cmdT := parser.Command()
-			cmdT = strings.Title(cmdT)
+			cmdT = strings.Title(cmdT) // figure out if you can skip this
 			switch cmdT {
 			case "//": // if a comment pass
 				continue
