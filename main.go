@@ -2,34 +2,20 @@ package main
 
 import (
 	"fmt"
+	"io/ioutil"
+	"log"
 	"os"
 	"strings"
 
 	codewriter "github.com/isongjosiah/Hack-VM-Translator/codewriter"
 	cmd "github.com/isongjosiah/Hack-VM-Translator/command"
-	parser "github.com/isongjosiah/Hack-VM-Translator/parser"
+	codeparser "github.com/isongjosiah/Hack-VM-Translator/parser"
 )
 
-func main() {
-	if len(os.Args) == 1 {
-		fmt.Println("Usage main.go <file.vm>")
-	}
-	filename := os.Args[1]
+var parser *codeparser.Parser
+var writer *codewriter.CodeWriter
 
-	// setup the parser
-	parser, err := parser.New(filename)
-	if err != nil {
-		fmt.Println(err)
-		return
-	}
-
-	// setup the codewriter
-	writer, err := codewriter.New(filename)
-	if err != nil {
-		fmt.Println(err)
-		return
-	}
-
+func mainwriter(parser *codeparser.Parser, writer *codewriter.CodeWriter) {
 	var com string
 	for {
 		parser.Advance()
@@ -76,4 +62,66 @@ func main() {
 			break
 		}
 	}
+}
+func main() {
+	if len(os.Args) == 1 {
+		fmt.Println("Usage main.go <file.vm | directory>")
+	}
+	name := os.Args[1]
+
+	// check if the input is a flie or directory
+	fi, err := os.Stat(name)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	// determine if the input is a file or directory and act accordingly
+	if fi.IsDir() {
+		// input is a directory
+
+		// get all the files using ioutil.ReadDir
+		files, err := ioutil.ReadDir(name)
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		// loop to do same thing for every single file
+		for _, f := range files {
+			parser, err = codeparser.New(f.Name())
+			if err != nil {
+				fmt.Println(err)
+				return
+			}
+
+			// setup the codewriter
+			writer, err = codewriter.New(name)
+			if err != nil {
+				fmt.Println(err)
+				return
+			}
+
+			mainwriter(parser, writer)
+		}
+
+		log.Fatal("input is a directory, the translator isn't able to deal with directories yet, but I am working on it!")
+
+	} else {
+		// input is a flie
+		// setup the parser
+		parser, err = codeparser.New(name)
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+
+		// setup the codewriter
+		writer, err = codewriter.New(name)
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+
+		mainwriter(parser, writer)
+	}
+
 }

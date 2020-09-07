@@ -53,11 +53,11 @@ func (c *CodeWriter) Name() string {
 }
 
 // New creates an instance of the type Codewriter
-func New(filename string) (*CodeWriter, error) {
+func New(name string) (*CodeWriter, error) {
 	var writer *CodeWriter
 	writer = &CodeWriter{}
 
-	err := writer.createfile(filename)
+	err := writer.createfile(name)
 	if err != nil {
 		return nil, err
 	}

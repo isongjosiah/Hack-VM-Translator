@@ -23,7 +23,7 @@ var parser Parser
 var segments = map[string]string{
 	"local":    "LCL",
 	"constant": "constant",
-	"argument": "ARG",
+	"arg":      "ARG",
 	"static":   "static",
 	"this":     "THIS",
 	"that":     "THAT",
@@ -32,15 +32,16 @@ var segments = map[string]string{
 }
 
 // opens the file, reads it and stores it content in a slice
-func (p *Parser) fileopener(filename string) error {
+func (p *Parser) opener(name string) error {
 	var err error
 
-	f, err := os.Open(filename)
+	f, err := os.Open(name)
 	if err != nil {
 		return err
 	}
 
 	p.scanner = bufio.NewScanner(f)
+
 	return nil
 }
 
@@ -96,9 +97,8 @@ func (p *Parser) Arg2() int {
 
 // New creates an instance of the Parser types
 func New(filename string) (*Parser, error) {
-	var parser *Parser
-	parser = &Parser{}
-	err := parser.fileopener(filename)
+	parser := &Parser{}
+	err := parser.opener(filename)
 	if err != nil {
 		return nil, err
 	}
