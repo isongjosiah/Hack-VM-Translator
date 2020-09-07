@@ -4,6 +4,7 @@ import (
 	"fmt"
 )
 
+// counter is appended to certain variable names(static) to create unique variables and labels
 var counter = 0
 
 //Push returns the assembly code mnemonic for pushing a value onto the
@@ -66,7 +67,7 @@ func Pop(segment string, n int, filename string) string {
 	return cmd
 }
 
-// Add returns the assembly code mnemonic or adding the
+// Add returns the assembly code mnemonic for adding the
 // top two values in the stack
 func Add() string {
 	cmd := fmt.Sprintf("//addition\n@SP\nM=M-1\nA=M\nD=M\n\n@SP\nM=M-1\nA=M\nM=M+D\nD=M\n@SP\nA=M\nM=D\n\n@SP\nM=M+1\n\n")

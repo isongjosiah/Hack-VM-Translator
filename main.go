@@ -78,19 +78,20 @@ func main() {
 	// determine if the input is a file or directory and act accordingly
 	if fi.IsDir() {
 		// input is a directory
-
 		// get all the files using ioutil.ReadDir
 		files, err := ioutil.ReadDir(name)
 		if err != nil {
 			log.Fatal(err)
 		}
 
-		// loop to do same thing for every single file
+		// loop to create parser for every file in the directory
 		for _, f := range files {
 			// setup the parser
-			parser, err = codeparser.New(f.Name())
+			// we would need to concactenate the folder and file name so the parser can search for the file
+			vmfile := fmt.Sprintf("./%s/%s", name, f.Name())
+			parser, err = codeparser.New(vmfile)
 			if err != nil {
-				fmt.Println(err)
+				log.Fatal(err)
 				return
 			}
 
@@ -105,8 +106,6 @@ func main() {
 			//output assembly code
 			mainwriter(parser, writer)
 		}
-
-		log.Fatal("input is a directory, the translator isn't able to deal with directories yet, but I am working on it!")
 
 	} else {
 		// input is a flie

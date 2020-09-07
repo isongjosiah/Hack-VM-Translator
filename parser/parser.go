@@ -95,7 +95,7 @@ func (p *Parser) Arg2() int {
 	return n
 }
 
-// New creates an instance of the Parser types
+// New creates an instance of the Parser type
 func New(filename string) (*Parser, error) {
 	parser := &Parser{}
 	err := parser.opener(filename)

@@ -25,9 +25,11 @@ func (c *CodeWriter) createfile(filename string) error {
 
 	var err error
 	var file *os.File
-	if file, err = os.Create(name); err != nil {
+	// can't use os.Create here as it will truncate the file everytime for directories.
+	if file, err = os.OpenFile(c.filename, os.O_APPEND|os.O_WRONLY|os.O_CREATE, 0644); err != nil {
 		return err
 	}
+
 	file.Close()
 	return nil
 }
