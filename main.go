@@ -87,6 +87,7 @@ func main() {
 
 		// loop to do same thing for every single file
 		for _, f := range files {
+			// setup the parser
 			parser, err = codeparser.New(f.Name())
 			if err != nil {
 				fmt.Println(err)
@@ -94,12 +95,14 @@ func main() {
 			}
 
 			// setup the codewriter
+			// using the name of the folder instead of that of the file so that only one file is used for the asm output
 			writer, err = codewriter.New(name)
 			if err != nil {
 				fmt.Println(err)
 				return
 			}
 
+			//output assembly code
 			mainwriter(parser, writer)
 		}
 
@@ -121,6 +124,7 @@ func main() {
 			return
 		}
 
+		//output assembly code
 		mainwriter(parser, writer)
 	}
 
