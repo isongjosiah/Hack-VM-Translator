@@ -5,6 +5,7 @@ import (
 	"io/ioutil"
 	"log"
 	"os"
+	"regexp"
 	"strings"
 
 	codewriter "github.com/isongjosiah/Hack-VM-Translator/codewriter"
@@ -87,24 +88,33 @@ func main() {
 		// loop to create parser for every file in the directory
 		for _, f := range files {
 			// setup the parser
-			// we would need to concactenate the folder and file name so the parser can search for the file
-			vmfile := fmt.Sprintf("./%s/%s", name, f.Name())
-			parser, err = codeparser.New(vmfile)
-			if err != nil {
-				log.Fatal(err)
-				return
+
+			// first check the extensiion to ensure the translator only deals with vm files
+			r, err := regexp.MatchString(".vm", f.Name())
+			if r {
+				// we would need to concactenate the folder and file name so the parser can search for the file
+				vmfile := fmt.Sprintf("./%s/%s", name, f.Name())
+				fmt.Println(fmt.Sprintf("translating %s now", vmfile))
+				parser, err = codeparser.New(vmfile)
+				if err != nil {
+					log.Fatal(err)
+					return
+				}
+
+				// setup the codewriter
+				// using the name of the folder instead of that of the file so that only one file is used for the asm output
+				writer, err = codewriter.New(name)
+				if err != nil {
+					fmt.Println(err)
+					return
+				}
+
+				//output assembly code
+				mainwriter(parser, writer)
+			} else {
+				continue
 			}
 
-			// setup the codewriter
-			// using the name of the folder instead of that of the file so that only one file is used for the asm output
-			writer, err = codewriter.New(name)
-			if err != nil {
-				fmt.Println(err)
-				return
-			}
-
-			//output assembly code
-			mainwriter(parser, writer)
 		}
 
 	} else {
