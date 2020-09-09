@@ -145,3 +145,27 @@ func Mult() string {
 
 	return cmd
 }
+
+//Call Writes assembly code that effects the call command
+func Call(fn string, n int) string {
+	cmd := fmt.Sprintf("// call %s %v\n\n%s%s%s%s%s%s//reposition LCL to current value of SP\n@SP\nD=M\n\n@LCL\nM=D\n\n//unconditional jump to function\n@%s\n0;JMP\n\n(%s$return-address)\n\n", fn, n, callreturner(fn), callpusher("LCL"), callpusher("ARG"), callpusher("THIS"), callpusher("THAT"), repositionarg(n), fn, fn)
+	return cmd
+}
+
+// callreturner returns the code for storing return address when calling a function
+func callreturner(fn string) string {
+	cmd := fmt.Sprintf("//push return address\n@%s$return-address\nD=A\n\n@SP\nA=M\nM=D\n\n@SP\nM=M+1\n\n", fn)
+	return cmd
+}
+
+//callpusher returns code for storing the working stack of the caller function
+func callpusher(seg string) string {
+	cmd := fmt.Sprintf("//push %s\n@%s\nD=M\n\n@SP\nA=M\nM=D\n\n@SP\nM=M+1\n\n", seg, seg)
+	return cmd
+}
+
+//repositionarg repositions ARG segment since we push argument before saving the working stack of the caller function
+func repositionarg(n int) string {
+	cmd := fmt.Sprintf("//repositioning arg\n@5\nD=A\n\n@%v\nD=A+D\n\n@SP\nD=M-D\n\n@ARG\nM=D\n\n", n)
+	return cmd
+}

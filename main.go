@@ -52,6 +52,10 @@ func mainwriter(parser *codeparser.Parser, writer *codewriter.CodeWriter) {
 				com = cmd.Sub()
 			case "Mult":
 				com = cmd.Mult()
+			case "Call":
+				fmt.Println(parser.Arg1())
+				fmt.Println(parser.Arg2())
+				com = cmd.Call(parser.Arg1(), parser.Arg2())
 			default:
 				a := fmt.Sprintf("This command %s is not yet provided for, try a future version of the translator", cmdT)
 				fmt.Println(a)
@@ -70,7 +74,6 @@ func main() {
 	}
 	name := os.Args[1]
 
-	// check if the input is a flie or directory
 	fi, err := os.Stat(name)
 	if err != nil {
 		log.Fatal(err)
@@ -89,12 +92,11 @@ func main() {
 		for _, f := range files {
 			// setup the parser
 
-			// first check the extensiion to ensure the translator only deals with vm files
+			// first check the extension to ensure the translator only deals with vm files
 			r, err := regexp.MatchString(".vm", f.Name())
 			if r {
 				// we would need to concactenate the folder and file name so the parser can search for the file
 				vmfile := fmt.Sprintf("./%s/%s", name, f.Name())
-				fmt.Println(fmt.Sprintf("translating %s now", vmfile))
 				parser, err = codeparser.New(vmfile)
 				if err != nil {
 					log.Fatal(err)

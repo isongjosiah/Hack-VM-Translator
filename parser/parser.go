@@ -81,7 +81,17 @@ func (p *Parser) Command() string {
 func (p *Parser) Arg1() string {
 	line := p.current
 	list := strings.Split(line, " ")
-	return segments[list[1]]
+	var out string
+	// check if it is a system defined arg i.e it exists in the segment maps
+	// if not, it is a user defined arg. Then just return it
+	str, found := segments[list[1]]
+	if found {
+		out = str
+	} else {
+		out = list[1]
+	}
+
+	return out
 }
 
 // Arg2 returs the second argument of the vm command
