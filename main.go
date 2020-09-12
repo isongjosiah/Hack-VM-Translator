@@ -53,9 +53,17 @@ func mainwriter(parser *codeparser.Parser, writer *codewriter.CodeWriter) {
 			case "Mult":
 				com = cmd.Mult()
 			case "Call":
-				fmt.Println(parser.Arg1())
-				fmt.Println(parser.Arg2())
 				com = cmd.Call(parser.Arg1(), parser.Arg2())
+			case "Label":
+				com = cmd.Label(parser.Arg1())
+			case "If-Goto":
+				com = cmd.If(parser.Arg1())
+			case "Goto":
+				com = cmd.Goto(parser.Arg1())
+			case "Return":
+				com = cmd.Return()
+			case "Function":
+				com = cmd.Function(parser.Arg1(), parser.Arg2())
 			default:
 				a := fmt.Sprintf("This command %s is not yet provided for, try a future version of the translator", cmdT)
 				fmt.Println(a)

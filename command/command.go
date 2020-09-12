@@ -7,6 +7,9 @@ import (
 // counter is appended to certain variable names(static) to create unique variables and labels
 var counter = 0
 
+// currentfunction holds the current function name so it can be appended to label names
+var currentfunction string
+
 //Push returns the assembly code mnemonic for pushing a value onto the
 // stack
 func Push(segment string, n int, filename string) string {
@@ -167,5 +170,56 @@ func callpusher(seg string) string {
 //repositionarg repositions ARG segment since we push argument before saving the working stack of the caller function
 func repositionarg(n int) string {
 	cmd := fmt.Sprintf("//repositioning arg\n@5\nD=A\n\n@%v\nD=A+D\n\n@SP\nD=M-D\n\n@ARG\nM=D\n\n", n)
+	return cmd
+}
+
+// Function returns the code that effects the function command
+func Function(fn string, n int) string {
+	// since the function must be called before labels inside the functions are defined
+	//we can store the current function name everytime we define a new function so it
+	//can be used for the label names
+	currentfunction = fn
+	cmd := fmt.Sprintf("//function %s %v\n(%s)\n@%v\n//store the value of no of arguments\nM=A\n(%s$LOOPER)\n@%v\nD=M\n@%s$ENDER\nD;JEQ\n\n@SP\nA=M\nM=0\n\n@SP\nM=M+1\n\n@%v\nM=M-1\n\n@%s$LOOPER\n0;JMP\n(%s$ENDER)\n\n", fn, n, fn, n, fn, n, fn, n, fn, fn)
+	return cmd
+}
+
+//Return returns the code that effects the return command
+func Return() string {
+	cmd := fmt.Sprintf("//Return\n@LCL\nD=M\n\n@FRAME\nM=D\n\n@5\nD=A\n@FRAME\nD=M-D\n@RET\nM=D\n\n@SP\nAM=M-1\nD=M\n\n@ARG\nA=M\nM=D\n\n//restore the SP of caller\n@ARG\nD=M+1\n\n@SP\nM=D\n\n//restore THAT fo the caller\n@FRAME\nA=M-1\nD=M\n@THAT\nM=D\n\n%s%s%s//unconditional jump to return address\n@RET\n0;JMP\n\n", returnrestorer("THIS", 2), returnrestorer("ARG", 3), returnrestorer("LCL", 4))
+	return cmd
+}
+
+//returnrestorer returns the code that restors the segment of the caller function.
+func returnrestorer(seg string, val int) string {
+	cmd := fmt.Sprintf("//rerstore %s of caller\n@%v\nD=A\n\n@FRAME\nA=M-D\nD=M\n\n@%s\nM=D\n\n", seg, val, seg)
+	return cmd
+}
+
+// ------figure out how to add the function name to the labels-------
+
+//Label returns asm code that effects the label command
+func Label(lab string) string {
+	label := fmt.Sprintf("%s$%s", currentfunction, lab)
+	cmd := fmt.Sprintf("//write label\n@%s\n\n", label)
+	return cmd
+}
+
+//If returns asm code that effects the If command
+func If(lab string) string {
+	label := fmt.Sprintf("%s$%s", currentfunction, lab)
+	cmd := fmt.Sprintf("//write if\n@SP\nAM=M-1\nD=M\n\n@%s\nD;JNE\n\n", label)
+	return cmd
+}
+
+//Goto returns asm code that effects the Goto command
+func Goto(lab string) string {
+	label := fmt.Sprintf("%s$%s", currentfunction, lab)
+	cmd := fmt.Sprintf("//write goto\n@%s\n0;JMP", label)
+	return cmd
+}
+
+//Init returns asm code that effects the Init command
+func Init() string {
+	cmd := fmt.Sprintf("//write Init")
 	return cmd
 }
