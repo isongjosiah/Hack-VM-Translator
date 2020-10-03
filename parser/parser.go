@@ -23,7 +23,7 @@ var parser Parser
 var segments = map[string]string{
 	"local":    "LCL",
 	"constant": "constant",
-	"arg":      "ARG",
+	"argument": "ARG",
 	"static":   "static",
 	"this":     "THIS",
 	"that":     "THAT",
@@ -32,16 +32,15 @@ var segments = map[string]string{
 }
 
 // opens the file, reads it and stores it content in a slice
-func (p *Parser) opener(name string) error {
+func (p *Parser) fileopener(filename string) error {
 	var err error
 
-	f, err := os.Open(name)
+	f, err := os.Open(filename)
 	if err != nil {
 		return err
 	}
 
 	p.scanner = bufio.NewScanner(f)
-
 	return nil
 }
 
@@ -81,17 +80,7 @@ func (p *Parser) Command() string {
 func (p *Parser) Arg1() string {
 	line := p.current
 	list := strings.Split(line, " ")
-	var out string
-	// check if it is a system defined arg i.e it exists in the segment maps
-	// if not, it is a user defined arg. Then just return it
-	str, found := segments[list[1]]
-	if found {
-		out = str
-	} else {
-		out = list[1]
-	}
-
-	return out
+	return segments[list[1]]
 }
 
 // Arg2 returs the second argument of the vm command
@@ -105,10 +94,11 @@ func (p *Parser) Arg2() int {
 	return n
 }
 
-// New creates an instance of the Parser type
+// New creates an instance of the Parser types
 func New(filename string) (*Parser, error) {
-	parser := &Parser{}
-	err := parser.opener(filename)
+	var parser *Parser
+	parser = &Parser{}
+	err := parser.fileopener(filename)
 	if err != nil {
 		return nil, err
 	}

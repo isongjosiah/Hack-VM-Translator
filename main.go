@@ -2,21 +2,34 @@ package main
 
 import (
 	"fmt"
-	"io/ioutil"
-	"log"
 	"os"
-	"regexp"
 	"strings"
 
 	codewriter "github.com/isongjosiah/Hack-VM-Translator/codewriter"
 	cmd "github.com/isongjosiah/Hack-VM-Translator/command"
-	codeparser "github.com/isongjosiah/Hack-VM-Translator/parser"
+	parser "github.com/isongjosiah/Hack-VM-Translator/parser"
 )
 
-var parser *codeparser.Parser
-var writer *codewriter.CodeWriter
+func main() {
+	if len(os.Args) == 1 {
+		fmt.Println("Usage main.go <file.vm>")
+	}
+	filename := os.Args[1]
 
-func mainwriter(parser *codeparser.Parser, writer *codewriter.CodeWriter) {
+	// setup the parser
+	parser, err := parser.New(filename)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+
+	// setup the codewriter
+	writer, err := codewriter.New(filename)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+
 	var com string
 	for {
 		parser.Advance()
@@ -52,18 +65,6 @@ func mainwriter(parser *codeparser.Parser, writer *codewriter.CodeWriter) {
 				com = cmd.Sub()
 			case "Mult":
 				com = cmd.Mult()
-			case "Call":
-				com = cmd.Call(parser.Arg1(), parser.Arg2())
-			case "Label":
-				com = cmd.Label(parser.Arg1())
-			case "If-Goto":
-				com = cmd.If(parser.Arg1())
-			case "Goto":
-				com = cmd.Goto(parser.Arg1())
-			case "Return":
-				com = cmd.Return()
-			case "Function":
-				com = cmd.Function(parser.Arg1(), parser.Arg2())
 			default:
 				a := fmt.Sprintf("This command %s is not yet provided for, try a future version of the translator", cmdT)
 				fmt.Println(a)
@@ -75,76 +76,4 @@ func mainwriter(parser *codeparser.Parser, writer *codewriter.CodeWriter) {
 			break
 		}
 	}
-}
-func main() {
-	if len(os.Args) == 1 {
-		fmt.Println("Usage main.go <file.vm | directory>")
-	}
-	name := os.Args[1]
-
-	fi, err := os.Stat(name)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	// determine if the input is a file or directory and act accordingly
-	if fi.IsDir() {
-		// input is a directory
-		// get all the files using ioutil.ReadDir
-		files, err := ioutil.ReadDir(name)
-		if err != nil {
-			log.Fatal(err)
-		}
-
-		// loop to create parser for every file in the directory
-		for _, f := range files {
-			// setup the parser
-
-			// first check the extension to ensure the translator only deals with vm files
-			r, err := regexp.MatchString(".vm", f.Name())
-			if r {
-				// we would need to concactenate the folder and file name so the parser can search for the file
-				vmfile := fmt.Sprintf("./%s/%s", name, f.Name())
-				parser, err = codeparser.New(vmfile)
-				if err != nil {
-					log.Fatal(err)
-					return
-				}
-
-				// setup the codewriter
-				// using the name of the folder instead of that of the file so that only one file is used for the asm output
-				writer, err = codewriter.New(name)
-				if err != nil {
-					fmt.Println(err)
-					return
-				}
-
-				//output assembly code
-				mainwriter(parser, writer)
-			} else {
-				continue
-			}
-
-		}
-
-	} else {
-		// input is a flie
-		// setup the parser
-		parser, err = codeparser.New(name)
-		if err != nil {
-			fmt.Println(err)
-			return
-		}
-
-		// setup the codewriter
-		writer, err = codewriter.New(name)
-		if err != nil {
-			fmt.Println(err)
-			return
-		}
-
-		//output assembly code
-		mainwriter(parser, writer)
-	}
-
 }

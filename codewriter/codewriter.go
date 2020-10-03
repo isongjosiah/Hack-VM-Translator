@@ -25,11 +25,9 @@ func (c *CodeWriter) createfile(filename string) error {
 
 	var err error
 	var file *os.File
-	// can't use os.Create here as it will truncate the file everytime for directories.
-	if file, err = os.OpenFile(c.filename, os.O_APPEND|os.O_WRONLY|os.O_CREATE, 0644); err != nil {
+	if file, err = os.Create(name); err != nil {
 		return err
 	}
-
 	file.Close()
 	return nil
 }
@@ -55,11 +53,11 @@ func (c *CodeWriter) Name() string {
 }
 
 // New creates an instance of the type Codewriter
-func New(name string) (*CodeWriter, error) {
+func New(filename string) (*CodeWriter, error) {
 	var writer *CodeWriter
 	writer = &CodeWriter{}
 
-	err := writer.createfile(name)
+	err := writer.createfile(filename)
 	if err != nil {
 		return nil, err
 	}
