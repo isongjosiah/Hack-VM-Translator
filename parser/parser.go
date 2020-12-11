@@ -18,8 +18,6 @@ type Parser struct {
 	scanner         *bufio.Scanner
 }
 
-var parser Parser
-
 var segments = map[string]string{
 	"local":    "LCL",
 	"constant": "constant",
@@ -32,7 +30,7 @@ var segments = map[string]string{
 }
 
 // opens the file, reads it and stores it content in a slice
-func (p *Parser) fileopener(filename string) error {
+func (p *Parser) fileOpener(filename string) error {
 	var err error
 
 	f, err := os.Open(filename)
@@ -98,7 +96,7 @@ func (p *Parser) Arg2() int {
 func New(filename string) (*Parser, error) {
 	var parser *Parser
 	parser = &Parser{}
-	err := parser.fileopener(filename)
+	err := parser.fileOpener(filename)
 	if err != nil {
 		return nil, err
 	}

@@ -70,7 +70,7 @@ func main() {
 				fmt.Println(a)
 
 			}
-			writer.Writeasm(com)
+			writer.WriteAsm(com)
 
 		} else {
 			break

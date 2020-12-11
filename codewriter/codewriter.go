@@ -14,9 +14,9 @@ type CodeWriter struct {
 	name     string
 }
 
-// Createfile a file with the .asm extension. This file is
-// where the codewriter writes the assembly code mnemonic.
-func (c *CodeWriter) createfile(filename string) error {
+// createFile a file with the .asm extension. This file is
+// where the codeWriter writes the assembly code mnemonic.
+func (c *CodeWriter) createFile(filename string) error {
 	out := strings.Split(filename, ".")
 	named := out[0]
 	c.name = named
@@ -28,13 +28,15 @@ func (c *CodeWriter) createfile(filename string) error {
 	if file, err = os.Create(name); err != nil {
 		return err
 	}
-	file.Close()
+	if err := file.Close(); err != nil {
+		return err
+	}
 	return nil
 }
 
-//Writeasm writes the assembly code mnemonic to the file
-// created by the Createfile method
-func (c *CodeWriter) Writeasm(cmd string) {
+//WriteAsm writes the assembly code mnemonic to the file
+// created by the CreateFile method
+func (c *CodeWriter) WriteAsm(cmd string) {
 	file, err := os.OpenFile(c.filename, os.O_APPEND|os.O_WRONLY, 0644)
 	if err != nil {
 		log.Fatal(err)
@@ -52,12 +54,12 @@ func (c *CodeWriter) Name() string {
 	return c.name
 }
 
-// New creates an instance of the type Codewriter
+// New creates an instance of the type CodeWriter
 func New(filename string) (*CodeWriter, error) {
 	var writer *CodeWriter
 	writer = &CodeWriter{}
 
-	err := writer.createfile(filename)
+	err := writer.createFile(filename)
 	if err != nil {
 		return nil, err
 	}
